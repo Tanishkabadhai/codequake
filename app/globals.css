@@ -4,13 +4,25 @@
 
 :root {
   color-scheme: dark;
+  
+  /* Unified color palette from reference images */
+  --color-cyan: #00f0ff;
+  --color-magenta: #ec4899;
+  --color-purple: #a855f7;
+  --color-blue: #3b82f6;
+  --color-pink: #f472b6;
+  --color-orange: #fb923c;
+  --color-yellow: #fbbf24;
+  --color-teal: #14b8a6;
+  --color-lavender: #c084fc;
+  --color-rose: #fb7185;
 }
 
 body {
   margin: 0;
-  background:
-    linear-gradient(135deg, #05070c 0%, #111122 40%, #230d20 72%, #080b10 100%);
-  color: #e5edf7;
+  background: #0a0a0f;
+  color: #f8fafc;
+  overflow-x: hidden;
 }
 
 * {
@@ -31,46 +43,141 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* Base shell - now supports dynamic backgrounds per screen */
 .codequake-shell {
   position: relative;
-  background:
-    radial-gradient(circle at 16% 20%, rgba(99, 102, 241, 0.26), transparent 28rem),
-    radial-gradient(circle at 84% 18%, rgba(236, 72, 153, 0.22), transparent 24rem),
-    radial-gradient(circle at 50% 86%, rgba(34, 211, 238, 0.16), transparent 34rem),
-    #05070c;
+  min-height: 100vh;
+  background: #0a0a0f;
 }
 
+/* Screen-specific background layers */
+.screen-landing {
+  background-image: url('/theme/landing-hero.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.screen-landing::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(10, 10, 15, 0.75) 0%, rgba(30, 20, 40, 0.65) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.screen-input {
+  background-image: url('/theme/input-calm.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.screen-input::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 10, 15, 0.85) 0%, rgba(20, 15, 30, 0.75) 100%);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.screen-reasoning {
+  background-image: url('/theme/reasoning-energy.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.screen-reasoning::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(10, 10, 15, 0.7) 0%, rgba(30, 10, 40, 0.85) 100%);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.screen-results {
+  background-image: url('/theme/results-crystal.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.screen-results::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(10, 10, 15, 0.8) 0%, rgba(15, 20, 35, 0.75) 50%, rgba(20, 10, 30, 0.8) 100%);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Fallback gradient for when images aren't loaded */
+.codequake-shell:not([class*="screen-"]) {
+  background:
+    radial-gradient(circle at 16% 20%, rgba(0, 240, 255, 0.26), transparent 28rem),
+    radial-gradient(circle at 84% 18%, rgba(236, 72, 153, 0.22), transparent 24rem),
+    radial-gradient(circle at 50% 86%, rgba(168, 85, 247, 0.16), transparent 34rem),
+    #0a0a0f;
+}
+
+/* Atmospheric aurora overlay - enhanced with new palette */
 .liquid-aurora {
   position: fixed;
   inset: -12%;
   pointer-events: none;
-  opacity: 0.78;
-  filter: blur(10px);
+  opacity: 0.5;
+  filter: blur(14px);
   background:
-    conic-gradient(from 210deg at 55% 45%, transparent 0deg, rgba(34, 211, 238, 0.18) 52deg, rgba(217, 70, 239, 0.24) 105deg, rgba(244, 63, 94, 0.2) 158deg, transparent 250deg),
-    radial-gradient(ellipse at 28% 48%, rgba(236, 72, 153, 0.28), transparent 22rem),
-    radial-gradient(ellipse at 74% 62%, rgba(34, 211, 238, 0.2), transparent 26rem);
+    conic-gradient(from 210deg at 55% 45%, transparent 0deg, var(--color-cyan) 52deg, var(--color-magenta) 105deg, var(--color-purple) 158deg, transparent 250deg),
+    radial-gradient(ellipse at 28% 48%, var(--color-pink), transparent 22rem),
+    radial-gradient(ellipse at 74% 62%, var(--color-teal), transparent 26rem);
+  z-index: 2;
+  mix-blend-mode: screen;
+  animation: aurora-shift 20s ease-in-out infinite;
 }
 
-.codequake-shell::before {
+@keyframes aurora-shift {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.5; }
+  33% { transform: translate(2%, -2%) rotate(1deg); opacity: 0.6; }
+  66% { transform: translate(-2%, 2%) rotate(-1deg); opacity: 0.4; }
+}
+
+/* Subtle grid overlay for technical aesthetic */
+.codequake-shell::after {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    linear-gradient(var(--color-cyan) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-cyan) 1px, transparent 1px);
   background-size: 52px 52px;
+  opacity: 0.025;
   mask-image: radial-gradient(circle at 50% 40%, black, transparent 75%);
+  z-index: 3;
 }
 
+/* Hero liquid background with new palette */
 .hero-liquid {
   background:
     radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.18), transparent 7rem),
-    radial-gradient(ellipse at 28% 55%, rgba(34, 211, 238, 0.42), transparent 13rem),
-    radial-gradient(ellipse at 76% 42%, rgba(236, 72, 153, 0.44), transparent 14rem),
-    radial-gradient(ellipse at 50% 78%, rgba(251, 113, 133, 0.34), transparent 18rem),
+    radial-gradient(ellipse at 28% 55%, var(--color-cyan), transparent 13rem),
+    radial-gradient(ellipse at 76% 42%, var(--color-magenta), transparent 14rem),
+    radial-gradient(ellipse at 50% 78%, var(--color-pink), transparent 18rem),
     linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  animation: hero-pulse 8s ease-in-out infinite;
+}
+
+@keyframes hero-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
 }
 
 .hero-liquid::after {
@@ -82,6 +189,7 @@ button:disabled {
   mix-blend-mode: screen;
 }
 
+/* Glass orbit with enhanced colors */
 .glass-orbit {
   position: relative;
 }
@@ -94,14 +202,29 @@ button:disabled {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   transform: rotate(-18deg) scaleX(1.28);
+  box-shadow: 0 0 40px var(--color-cyan);
+  animation: orbit-ring-rotate 30s linear infinite;
+}
+
+@keyframes orbit-ring-rotate {
+  from { transform: rotate(-18deg) scaleX(1.28); }
+  to { transform: rotate(342deg) scaleX(1.28); }
 }
 
 .glass-orbit::after {
   inset: -56px;
-  border-color: rgba(34, 211, 238, 0.18);
+  border-color: var(--color-cyan);
   transform: rotate(23deg) scaleX(1.42);
+  box-shadow: 0 0 60px var(--color-magenta);
+  animation: orbit-ring-rotate-reverse 30s linear infinite;
 }
 
+@keyframes orbit-ring-rotate-reverse {
+  from { transform: rotate(23deg) scaleX(1.42); }
+  to { transform: rotate(383deg) scaleX(1.42); }
+}
+
+/* Glass input with enhanced focus states */
 .glass-input {
   width: 100%;
   resize: vertical;
@@ -116,16 +239,19 @@ button:disabled {
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
     0 18px 60px rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(18px);
+  transition: all 0.3s ease;
 }
 
 .glass-input:focus {
-  border-color: rgba(103, 232, 249, 0.55);
+  border-color: var(--color-cyan);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    0 0 0 3px rgba(34, 211, 238, 0.12),
+    0 0 0 3px rgba(0, 240, 255, 0.15),
+    0 0 40px rgba(0, 240, 255, 0.2),
     0 18px 60px rgba(0, 0, 0, 0.22);
 }
 
+/* Liquid card with gradient border effect */
 .liquid-card {
   border-radius: 1.35rem;
   border: 1px solid rgba(255, 255, 255, 0.11);
@@ -133,8 +259,19 @@ button:disabled {
     linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 24px 80px rgba(0, 0, 0, 0.26);
+    0 24px 80px rgba(0, 0, 0, 0.26),
+    0 0 0 1px rgba(0, 240, 255, 0.1);
   backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+
+.liquid-card:hover {
+  border-color: rgba(0, 240, 255, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 24px 80px rgba(0, 0, 0, 0.26),
+    0 0 0 1px var(--color-cyan),
+    0 0 30px rgba(0, 240, 255, 0.15);
 }
 
 .seismic-grid {

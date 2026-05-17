@@ -93,7 +93,7 @@ npm.cmd run dev
 - Working proof-of-concept
 - README.md
 - MIT License
-- Exported IBM Bob reports in `docs/bob-reports/`
+- Exported IBM Bob task session reports and consumption-summary screenshots in `bob_sessions/`
 - Screenshots in `docs/screenshots/`
 - Demo video clips
 - Presentation materials

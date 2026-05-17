@@ -26,6 +26,10 @@ import { Background, Controls, ReactFlow, type Edge, type Node } from "@xyflow/r
 import { useMemo, useState } from "react";
 import { analyzeCodequake } from "@/lib/analyzer";
 import { bobInsightTemplate, sampleDiff } from "@/lib/sample-data";
+import { BobReasoningStream } from "@/components/BobReasoningStream";
+import { BusinessImpactMetrics, calculateBusinessImpact } from "@/components/BusinessImpactMetrics";
+import { BobComparisonPanel } from "@/components/BobComparisonPanel";
+import { FaultZoneCardWithSource, determineInsightSource } from "@/components/InsightSourceBadge";
 
 type Step = "landing" | "input" | "reasoning" | "results";
 
@@ -275,52 +279,31 @@ function ReasoningScreen({
 }) {
   return (
     <section className="relative z-10 grid flex-1 place-items-center py-10">
-      <div className="w-full max-w-5xl rounded-[2rem] border border-white/12 bg-black/35 p-5 backdrop-blur-2xl md:p-8">
-        <button className="mb-5 inline-flex items-center gap-2 text-sm text-slate-300 hover:text-white" type="button" onClick={onBack}>
-          <ArrowLeft size={16} />
-          Back
-        </button>
-        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-          <div>
-            <BobBadge large />
-            <h2 className="mt-5 text-4xl font-semibold text-white md:text-5xl">IBM Bob is reasoning across the repository.</h2>
-            <p className="mt-4 text-sm leading-6 text-slate-300">
-              Codequake keeps the user inside one product flow while IBM Bob powers the architecture interpretation
-              behind the scenes.
-            </p>
-            <div className="mt-5 rounded-3xl border border-cyan-200/15 bg-cyan-300/[0.06] p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-100">Questions Bob answers</p>
-              <div className="mt-3 space-y-2">
-                {bobQuestions.map((question) => (
-                  <div key={question} className="flex gap-2 text-sm leading-5 text-slate-300">
-                    <Sparkles size={15} className="mt-0.5 shrink-0 text-cyan-100" />
-                    <span>{question}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="mt-7">
-              <GlassButton onClick={onViewReport} variant="primary" disabled={isLoading}>
-                {isLoading ? "Reasoning in progress" : "View Codequake Report"}
-                <ChevronRight size={18} />
-              </GlassButton>
-            </div>
-          </div>
-          <div className="grid gap-4">
-            {reasoningSteps.map((item, index) => (
-              <div key={item} className="liquid-card flex items-center gap-4 p-4">
-                <span className="grid size-11 shrink-0 place-items-center rounded-full border border-cyan-300/35 bg-cyan-300/10 text-cyan-100">
-                  {isLoading && index === 3 ? <RefreshCw size={18} className="animate-spin" /> : <CheckCircle2 size={18} />}
-                </span>
-                <div>
-                  <p className="font-medium text-white">{item}</p>
-                  <p className="text-sm text-slate-400">Topology signal {index + 1} locked</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <button className="mb-5 inline-flex items-center gap-2 text-sm text-slate-300 hover:text-white" type="button" onClick={onBack}>
+        <ArrowLeft size={16} />
+        Back
+      </button>
+      
+      <div className="flex w-full max-w-5xl flex-col items-center gap-6">
+        <BobReasoningStream
+          isAnalyzing={isLoading}
+          onComplete={() => {
+            // Auto-advance to results after Bob completes
+            setTimeout(() => onViewReport(), 1000);
+          }}
+        />
       </div>
+      
+      {/* Keep the manual advance button */}
+      {!isLoading && (
+        <button
+          onClick={onViewReport}
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-200 via-fuchsia-300 to-rose-300 px-6 py-3 text-sm font-semibold text-slate-950 shadow-[0_12px_40px_rgba(98,244,255,0.2)] transition hover:scale-[1.02]"
+        >
+          <span>View Codequake Report</span>
+          <ChevronRight size={18} />
+        </button>
+      )}
     </section>
   );
 }
@@ -377,6 +360,26 @@ function ResultsScreen({
         </div>
       </div>
 
+      {/* Business Impact Analysis */}
+      <Panel title="Business Impact Analysis" icon={<Activity size={18} />}>
+        <BusinessImpactMetrics
+          impact={calculateBusinessImpact(
+            analysis.instabilityIndex,
+            analysis.faultZones.length,
+            bobInsights.length > 0
+          )}
+          showBobBadge={true}
+        />
+      </Panel>
+
+      {/* IBM Bob Impact Comparison */}
+      <Panel title="IBM Bob Impact Comparison" icon={<BrainCircuit size={18} />}>
+        <BobComparisonPanel
+          analysis={analysis}
+          bobUsed={bobInsights.length > 0}
+        />
+      </Panel>
+
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
         <div className="space-y-5">
           <Panel title="Bob-Generated Insight" icon={<BrainCircuit size={18} />}>
@@ -421,15 +424,15 @@ function ResultsScreen({
       <div className="mt-5 grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
         <Panel title="Fault-Zone Map" icon={<ShieldAlert size={18} />}>
           <div className="grid gap-3 md:grid-cols-2">
-            {analysis.faultZones.map((zone) => (
-              <div key={zone.name} className="liquid-card p-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Fault Zone</p>
-                <h3 className="mt-1 font-semibold text-white">{zone.name}</h3>
-                <div className="mt-3 h-2 rounded-full bg-white/10">
-                  <div className="h-2 rounded-full bg-gradient-to-r from-cyan-300 to-rose-400" style={{ width: `${zone.instabilityIndex}%` }} />
-                </div>
-                <p className="mt-2 text-sm text-rose-100">Instability Index: {zone.instabilityIndex}%</p>
-              </div>
+            {analysis.faultZones.map((zone, i) => (
+              <FaultZoneCardWithSource
+                key={i}
+                name={zone.name}
+                instabilityIndex={zone.instabilityIndex}
+                reasons={zone.reasons}
+                source={determineInsightSource(zone.reasons)}
+                confidence={zone.reasons.some(r => r.toLowerCase().includes("bob")) ? 94 : 65}
+              />
             ))}
           </div>
         </Panel>

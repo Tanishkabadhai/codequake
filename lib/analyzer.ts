@@ -4,6 +4,8 @@ export type FaultZone = {
   name: string;
   instabilityIndex: number;
   reasons: string[];
+  source?: "bob" | "pattern" | "combined";
+  confidence?: number;
 };
 
 export type CodequakeAnalysis = {
@@ -86,7 +88,9 @@ export function analyzeCodequake(repoUrl: string, diff: string, bobInsights: str
         zoneMap.set(rule.zone, {
           name: rule.zone,
           instabilityIndex: 0,
-          reasons
+          reasons,
+          source: "pattern",
+          confidence: 65
         });
       }
     }
@@ -97,10 +101,13 @@ export function analyzeCodequake(repoUrl: string, diff: string, bobInsights: str
 
   for (const signal of bobSignals.zones) {
     const existing = zoneMap.get(signal.name);
+    const hasExisting = existing !== undefined;
     zoneMap.set(signal.name, {
       name: signal.name,
       instabilityIndex: 0,
-      reasons: [...(existing?.reasons ?? []), signal.reason]
+      reasons: [...(existing?.reasons ?? []), signal.reason],
+      source: hasExisting ? "combined" : "bob",
+      confidence: hasExisting ? 96 : 94
     });
   }
 
@@ -110,8 +117,10 @@ export function analyzeCodequake(repoUrl: string, diff: string, bobInsights: str
       name: "Cross-Domain Coupling Fault Zone",
       instabilityIndex: 0,
       reasons: [
-        "Authentication and revenue paths are changing together, increasing propagation amplification risk."
-      ]
+        "IBM Bob detected authentication and revenue paths changing together, increasing propagation amplification risk."
+      ],
+      source: "bob",
+      confidence: 94
     });
   }
 
