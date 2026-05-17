@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(135deg, #05070c 0%, #111122 40%, #230d20 72%, #080b10 100%);
+  color: #e5edf7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+.codequake-shell {
+  position: relative;
+  background:
+    radial-gradient(circle at 16% 20%, rgba(99, 102, 241, 0.26), transparent 28rem),
+    radial-gradient(circle at 84% 18%, rgba(236, 72, 153, 0.22), transparent 24rem),
+    radial-gradient(circle at 50% 86%, rgba(34, 211, 238, 0.16), transparent 34rem),
+    #05070c;
+}
+
+.liquid-aurora {
+  position: fixed;
+  inset: -12%;
+  pointer-events: none;
+  opacity: 0.78;
+  filter: blur(10px);
+  background:
+    conic-gradient(from 210deg at 55% 45%, transparent 0deg, rgba(34, 211, 238, 0.18) 52deg, rgba(217, 70, 239, 0.24) 105deg, rgba(244, 63, 94, 0.2) 158deg, transparent 250deg),
+    radial-gradient(ellipse at 28% 48%, rgba(236, 72, 153, 0.28), transparent 22rem),
+    radial-gradient(ellipse at 74% 62%, rgba(34, 211, 238, 0.2), transparent 26rem);
+}
+
+.codequake-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(circle at 50% 40%, black, transparent 75%);
+}
+
+.hero-liquid {
+  background:
+    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.18), transparent 7rem),
+    radial-gradient(ellipse at 28% 55%, rgba(34, 211, 238, 0.42), transparent 13rem),
+    radial-gradient(ellipse at 76% 42%, rgba(236, 72, 153, 0.44), transparent 14rem),
+    radial-gradient(ellipse at 50% 78%, rgba(251, 113, 133, 0.34), transparent 18rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+}
+
+.hero-liquid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(115deg, transparent, transparent 18px, rgba(255, 255, 255, 0.05) 19px, transparent 20px);
+  mix-blend-mode: screen;
+}
+
+.glass-orbit {
+  position: relative;
+}
+
+.glass-orbit::before,
+.glass-orbit::after {
+  content: "";
+  position: absolute;
+  inset: -32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transform: rotate(-18deg) scaleX(1.28);
+}
+
+.glass-orbit::after {
+  inset: -56px;
+  border-color: rgba(34, 211, 238, 0.18);
+  transform: rotate(23deg) scaleX(1.42);
+}
+
+.glass-input {
+  width: 100%;
+  resize: vertical;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.035));
+  padding: 0.9rem 1rem;
+  color: #f8fafc;
+  outline: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 18px 60px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px);
+}
+
+.glass-input:focus {
+  border-color: rgba(103, 232, 249, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0 0 3px rgba(34, 211, 238, 0.12),
+    0 18px 60px rgba(0, 0, 0, 0.22);
+}
+
+.liquid-card {
+  border-radius: 1.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 24px 80px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(20px);
+}
+
+.seismic-grid {
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(135deg, rgba(239, 68, 68, 0.08), transparent 32rem);
+  background-size: 44px 44px, 44px 44px, 100% 100%;
+}
+
+.event-console {
+  box-shadow:
+    0 0 0 1px rgba(239, 68, 68, 0.08),
+    0 28px 90px rgba(0, 0, 0, 0.44),
+    inset 0 0 80px rgba(239, 68, 68, 0.08);
+}
+
+.quake-scan {
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 240, 255, 0.04),
+      rgba(0, 240, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 12px
+    );
+  mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+}
